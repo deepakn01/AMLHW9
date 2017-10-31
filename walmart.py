@@ -50,9 +50,9 @@ class Walmart:
         analyzer = SentimentIntensityAnalyzer()
         return str(analyzer.polarity_scores(text))
 
-    def get_search_results(self, search_str):
+    def get_search_results(self, search_str, count = 10):
         res = list()
-        match = self.get_search_res(self.search_url + search_str)
+        match = self.get_search_res(self.search_url + search_str)[0:count]
         for link in match:
             try:
                 url = self.base_url + link
@@ -65,15 +65,16 @@ class Walmart:
                 print('sentiment: ' + sentiment)
                 r = SearchResult(url, desc, review, sentiment)
                 res.append(r)
+
             except:
                 continue
 
         return res
 
 
-wm = Walmart()
-res = wm.get_search_results('toys clearance')
-res = wm.get_search_results('star wars')
+# wm = Walmart()
+# res = wm.get_search_results('toys clearance')
+# res = wm.get_search_results('star wars')
 
 
 # to get the description of the product
