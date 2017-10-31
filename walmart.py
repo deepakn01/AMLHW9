@@ -52,38 +52,28 @@ class Walmart:
 
     def get_search_results(self, search_str):
         res = list()
-        surl = list()
-        sdesc = list()
-        sreview = list()
-        ssenti = list()
-        try:
-            match = self.get_search_res(self.search_url + search_str)
-            for link in match:
+        match = self.get_search_res(self.search_url + search_str)
+        for link in match:
+            try:
                 url = self.base_url + link
-               # surl.append(url)
                 desc = self.get_desc(url)
-               # sdesc.append(desc)
                 review =  self.get_review_title(url)
-               # sreview.append(review)
                 sentiment = self.get_sentiment(review)
-               # ssenti.append(sentiment)
-               # print('link: ' + url)
-               # print('desc: ' + desc)
-               # print('review: ' + review)
-               # print('sentiment: ' + sentiment)
+                print('link: ' + url)
+                print('desc: ' + desc)
+                print('review: ' + review)
+                print('sentiment: ' + sentiment)
                 r = SearchResult(url, desc, review, sentiment)
                 res.append(r)
-        except:
-            return res
+            except:
+                continue
+
         return res
 
 
-#wm = Walmart()
-#res = wm.get_search_results('basket')
-
-#print(res)
-
-
+wm = Walmart()
+res = wm.get_search_results('toys clearance')
+res = wm.get_search_results('star wars')
 
 
 # to get the description of the product
