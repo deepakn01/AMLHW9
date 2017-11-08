@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup as BS
 import re
 # from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import metapy
 
 class SearchResult:
     def __init__(self, search_url, desc, review, sentiment):
@@ -72,9 +73,18 @@ class Walmart:
         return res
 
 
-# wm = Walmart()
-# res = wm.get_search_results('toys clearance')
-# res = wm.get_search_results('star wars')
+#wm = Walmart()
+#results = wm.get_search_results('basket')
+#print(results)
+#print('Program completed')
+# idx = metapy.index.make_inverted_index('config.toml')
+# query = metapy.index.Document()
+# ranker = metapy.index.OkapiBM25(k1=1.2,b=0.75,k3=500)
+#
+# num_results = 30
+# query.content('toys clearance')
+# results = ranker.score(idx, query, num_results)
+# print(results)
 
 
 # to get the description of the product
