@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
 import walmart as wm
+import createIndex as ci
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -22,7 +23,11 @@ def results():
     search_term = request.form['search']
     print(search_term)
     wal = wm.Walmart()
-    results = wal.get_search_results(search_term)
+    res = wal.get_search_results(search_term)
+    final_res = ci.createIndex(search_term)
+    final_res_id = [item[0] for item in final_res]
+    results = [res[i] for i in final_res_id]
+    print(len(results))
     head1 = '<h1> Search Results for: ' + search_term + '</h1><br><br>'
     # head2 = '<br>'
     tbl_start = '<table><tr><th>Product</th><th>Review</th><th>Sentiment</th><th width="200"></th></tr>'
