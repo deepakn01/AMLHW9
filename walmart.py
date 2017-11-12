@@ -27,7 +27,14 @@ class Walmart:
         soup = BS(requests.get(url).text, "html.parser")
         pretty_text = soup.prettify()
         match = re.findall('"productPageUrl":"(.*?)"', pretty_text)
-        return match
+
+        # find unique entries
+        output = []
+        for entry in match:
+            if entry not in output:
+                output.append(entry)
+
+        return output
 
     def get_desc(self, url):
         soup = BS(requests.get(url).text, "html.parser")
@@ -51,7 +58,7 @@ class Walmart:
         analyzer = SentimentIntensityAnalyzer()
         return str(analyzer.polarity_scores(text))
 
-    def get_search_results(self, search_str, count = 10):
+    def get_search_results(self, search_str, count = 7):
         res = list()
         match = self.get_search_res(self.search_url + search_str)[0:count]
         for link in match:
@@ -73,19 +80,37 @@ class Walmart:
         return res
 
 
-#wm = Walmart()
-#results = wm.get_search_results('basket')
-#print(results)
-#print('Program completed')
-# idx = metapy.index.make_inverted_index('config.toml')
-# query = metapy.index.Document()
-# ranker = metapy.index.OkapiBM25(k1=1.2,b=0.75,k3=500)
-#
-# num_results = 30
-# query.content('toys clearance')
-# results = ranker.score(idx, query, num_results)
-# print(results)
+    def write_results(self, res):
+        f = open("cranfield/cranfield.dat", "w+")
+        for i, result in enumerate(res):
+            f.write(res[i].desc)
+            f.write(' . ')
+            f.write('\n')
+        f.close()
+        return
 
+
+    def createIndex(self, query_txt):
+        idx = metapy.index.make_inverted_index('config.toml')
+        print('Indexing complete')
+        query = metapy.index.Document()
+        # ranker = metapy.index.OkapiBM25(k1=1.2, b=0.75, k3=500)
+        ranker = metapy.index.DirichletPrior(mu=68)
+        print("Num of docs:" + str(idx.num_docs()))
+        query.content(query_txt)
+        print("Query text: " + query_txt)
+        results = ranker.score(idx, query, 1)
+        print('Ranking complete')
+        return (results)
+
+# search_term = "basket ball hoop"
+search_term = "basket"
+wm = Walmart()
+results = wm.get_search_results(search_term)
+wm.write_results(results)
+rank_res = wm.createIndex(search_term)
+#
+# print(rank_res)
 
 # to get the description of the product
 # res = soup.find_all(class_ = re.compile('description.*body'))
