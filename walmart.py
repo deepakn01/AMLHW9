@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup as BS
 import re
+import os
+import shutil
 # from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import metapy
@@ -39,7 +41,7 @@ class Walmart:
     def get_desc(self, url):
         soup = BS(requests.get(url).text, "html.parser")
         desc_res = soup.find(class_='about-desc').contents
-        desc = ''
+        desc = soup.title.string
         for tag in desc_res:
             desc += ' ' + tag.text
         return desc
@@ -91,25 +93,27 @@ class Walmart:
 
 
     def createIndex(self, query_txt):
+        # delete indexing if it exists
+        if(os.path.isdir("idx")):
+            shutil.rmtree("idx")
         idx = metapy.index.make_inverted_index('config.toml')
         print('Indexing complete')
         query = metapy.index.Document()
-        # ranker = metapy.index.OkapiBM25(k1=1.2, b=0.75, k3=500)
-        ranker = metapy.index.DirichletPrior(mu=68)
+        ranker = metapy.index.OkapiBM25(k1=1.2, b=0.75, k3=500)
+        # ranker = metapy.index.DirichletPrior(mu=68)
         print("Num of docs:" + str(idx.num_docs()))
         query.content(query_txt)
         print("Query text: " + query_txt)
-        results = ranker.score(idx, query, 1)
+        results = ranker.score(idx, query, 10)
         print('Ranking complete')
         return (results)
 
 # search_term = "basket ball hoop"
-search_term = "basket"
-wm = Walmart()
-results = wm.get_search_results(search_term)
-wm.write_results(results)
-rank_res = wm.createIndex(search_term)
-#
+# search_term = "basket"
+# wm = Walmart()
+# results = wm.get_search_results(search_term)
+# wm.write_results(results)
+# rank_res = wm.createIndex(search_term)
 # print(rank_res)
 
 # to get the description of the product
