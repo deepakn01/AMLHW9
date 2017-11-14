@@ -1,26 +1,20 @@
 from flask import Flask, request, render_template
 import walmart as wm
-import threading
 
 app = Flask(__name__)
-# app.config['DEBUG'] = True
-
 
 @app.route("/")
+
 def index():
     return render_template('index.html')
 
 @app.route("/results", methods=['post'])
 
-
 def results():
     search_term = request.form['search']
-    # threading._start_new_thread(compute)
-
-    search_term = "basket"
     walmart = wm.Walmart()
-    results = walmart.get_search_results(search_term)
-    walmart.write_results(results)
+    search_res = walmart.get_search_results(search_term)
+    walmart.write_results(search_res)
     rank_res = walmart.createIndex(search_term)
     print(rank_res)
 
@@ -29,11 +23,9 @@ def results():
     tbl_end = '</table>'
     tbl_data = ''
     for i, result in enumerate(rank_res):
-        tbl_data = tbl_data + '<tr><td>' + rank_res[i].desc + '</td><td>' + rank_res[i].review + '</td><td>' + rank_res[
-            i].sentiment + '</td><td width="200"><a href="' + rank_res[i].search_url + '">Buy Now</a></td></tr>'
+        tbl_data = tbl_data + '<tr><td>' + search_res[i].desc + '</td><td>' + search_res[i].review + '</td><td>' + search_res[
+            i].sentiment + '</td><td width="200"><a href="' + search_res[i].search_url + '">Buy Now</a></td></tr>'
 
     return head1 + tbl_start + tbl_data + tbl_end
 
-
-# app.run(debug=True)
 app.run()
