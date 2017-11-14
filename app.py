@@ -23,8 +23,10 @@ def results():
     tbl_end = '</table>'
     tbl_data = ''
     for i, result in enumerate(rank_res):
-        tbl_data = tbl_data + '<tr><td>' + search_res[i].desc + '</td><td>' + search_res[i].review + '</td><td>' + search_res[
-            i].sentiment + '</td><td width="200"><a href="' + search_res[i].search_url + '">Buy Now</a></td></tr>'
+        idx = result[0]
+        print(idx)
+        tbl_data = tbl_data + '<tr><td>' + search_res[idx].desc + '</td><td>' + search_res[idx].review + '</td><td>' + search_res[
+            idx].sentiment + '</td><td width="200"><a href="' + search_res[idx].search_url + '">Buy Now</a></td></tr>'
 
     return head1 + tbl_start + tbl_data + tbl_end
 
