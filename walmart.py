@@ -7,6 +7,13 @@ import shutil
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import metapy
 
+# todo: remove duplicates
+# todo: separate title from desc
+# todo: separate indexing
+# todo: separate topic with weightage
+# todo: create interface
+# todo:
+
 class SearchResult:
     def __init__(self, search_url, desc, review, sentiment):
         self.search_url = search_url
@@ -32,8 +39,11 @@ class Walmart:
 
         # find unique entries
         output = []
+        unique = []
         for entry in match:
-            if entry not in output:
+            m = re.match('(.*)/', entry)
+            if(m.group() not in unique):
+                unique.append(m.group())
                 output.append(entry)
 
         return output
@@ -60,7 +70,7 @@ class Walmart:
         analyzer = SentimentIntensityAnalyzer()
         return str(analyzer.polarity_scores(text))
 
-    def get_search_results(self, search_str, count = 7):
+    def get_search_results(self, search_str, count = 15):
         res = list()
         match = self.get_search_res(self.search_url + search_str)[0:count]
         for link in match:
