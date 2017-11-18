@@ -7,7 +7,6 @@ import shutil
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import metapy
 
-# todo: remove duplicates
 # todo: separate title from desc
 # todo: separate indexing
 # todo: separate topic with weightage
@@ -15,8 +14,9 @@ import metapy
 # todo:
 
 class SearchResult:
-    def __init__(self, search_url, desc, review, sentiment):
+    def __init__(self, search_url, title, desc, review, sentiment):
         self.search_url = search_url
+        self.title = title
         self.desc = desc
         self.review = review
         self.sentiment = sentiment
@@ -26,13 +26,7 @@ class Walmart:
         self.search_url = "https://www.walmart.com/search/?query="
         self.base_url = "https://www.walmart.com"
 
-    # url = 'https://www.walmart.com/search/?query=basket&cat_id=0'
-    # url = 'https://www.walmart.com/search/?query=hanger&cat_id=0'
-    # url = 'https://www.walmart.com/ip/Better-Homes-and-Gardens-Medium-Wire-Basket-with-Chalkboard-Black/24534322'
-    # url = 'https://www.walmart.com/ip/Woven-Wood-Basket-Set-Multiple-Colors-4-Piece-Set/54266626?variantFieldId=actual_color'
-    # url = 'https://www.walmart.com/ip/Mainstays-18-Pack-Plastic-HANGER-WHITE/27631575'
-
-    def get_search_res(self, url):
+    def get_search_url(self, url):
         soup = BS(requests.get(url).text, "html.parser")
         pretty_text = soup.prettify()
         match = re.findall('"productPageUrl":"(.*?)"', pretty_text)
@@ -48,16 +42,17 @@ class Walmart:
 
         return output
 
-    def get_desc(self, url):
-        soup = BS(requests.get(url).text, "html.parser")
+    def get_desc(self, soup):
         desc_res = soup.find(class_='about-desc').contents
-        desc = soup.title.string
+        desc = ''
         for tag in desc_res:
             desc += ' ' + tag.text
         return desc
 
-    def get_review_title(self, url):
-        soup = BS(requests.get(url).text, "html.parser")
+    def get_title(self, soup):
+        return soup.title.string
+
+    def get_review_title(self, soup):
         review_all = soup.find_all(class_='review-title')
         review_title = ''
         for review in review_all:
@@ -72,18 +67,21 @@ class Walmart:
 
     def get_search_results(self, search_str, count = 15):
         res = list()
-        match = self.get_search_res(self.search_url + search_str)[0:count]
+        match = self.get_search_url(self.search_url + search_str)[0:count]
         for link in match:
             try:
                 url = self.base_url + link
-                desc = self.get_desc(url)
-                review =  self.get_review_title(url)
+                soup = BS(requests.get(url).text, "html.parser")
+                title = self.get_title(soup)
+                desc = self.get_desc(soup)
+                review =  self.get_review_title(soup)
                 sentiment = self.get_sentiment(review)
                 print('link: ' + url)
+                print('title: ' + title)
                 print('desc: ' + desc)
                 print('review: ' + review)
                 print('sentiment: ' + sentiment)
-                r = SearchResult(url, desc, review, sentiment)
+                r = SearchResult(url, title, desc, review, sentiment)
                 res.append(r)
 
             except:
@@ -91,16 +89,14 @@ class Walmart:
 
         return res
 
-
     def write_results(self, res):
         f = open("cranfield/cranfield.dat", "w+")
         for i, result in enumerate(res):
-            f.write(res[i].desc)
+            f.write(res[i].title + ' ' + res[i].desc)
             f.write(' . ')
             f.write('\n')
         f.close()
         return
-
 
     def createIndex(self, query_txt):
         # delete indexing if it exists
