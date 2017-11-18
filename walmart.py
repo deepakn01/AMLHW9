@@ -1,17 +1,14 @@
 import requests
 from bs4 import BeautifulSoup as BS
 import re
-import os
-import shutil
 # from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import metapy
 
-# todo: separate title from desc
 # todo: separate indexing
 # todo: separate topic with weightage
 # todo: create interface
-# todo:
+# todo: add desc to app display
+# todo: add more reviews
 
 class SearchResult:
     def __init__(self, search_url, title, desc, review, sentiment):
@@ -88,31 +85,6 @@ class Walmart:
                 continue
 
         return res
-
-    def write_results(self, res):
-        f = open("cranfield/cranfield.dat", "w+")
-        for i, result in enumerate(res):
-            f.write(res[i].title + ' ' + res[i].desc)
-            f.write(' . ')
-            f.write('\n')
-        f.close()
-        return
-
-    def createIndex(self, query_txt):
-        # delete indexing if it exists
-        if(os.path.isdir("idx")):
-            shutil.rmtree("idx")
-        idx = metapy.index.make_inverted_index('config.toml')
-        print('Indexing complete')
-        query = metapy.index.Document()
-        ranker = metapy.index.OkapiBM25(k1=1.2, b=0.75, k3=500)
-        # ranker = metapy.index.DirichletPrior(mu=68)
-        print("Num of docs:" + str(idx.num_docs()))
-        query.content(query_txt)
-        print("Query text: " + query_txt)
-        results = ranker.score(idx, query, 10)
-        print('Ranking complete')
-        return (results)
 
 # search_term = "basket ball hoop"
 # search_term = "basket"
