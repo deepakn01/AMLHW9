@@ -10,6 +10,7 @@ corpus = "line.toml"
 
 index = "idx"
 
+query-judgements = "cranfield-qrels.txt"
 
 
 [[analyzers]]
@@ -19,6 +20,7 @@ method = "ngram-word"
 ngram = 1
 
 filter = "default-unigram-chain"
+
 
 
 
