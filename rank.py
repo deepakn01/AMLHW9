@@ -13,19 +13,42 @@ class Rank:
         f.close()
         return
 
+
     @staticmethod
-    def get_ranking(query_txt):
+    def create_inv_idx():
         # delete indexing if it exists
         if(os.path.isdir("idx")):
             shutil.rmtree("idx")
-        idx = metapy.index.make_inverted_index('config.toml')
         print('Indexing complete')
-        query = metapy.index.Document()
+        return metapy.index.make_inverted_index('config.toml')
+
+    @staticmethod
+    def create_query_obj(query_txt):
+        query_obj = metapy.index.Document()
+        query_obj.content(query_txt)
+        return query_obj
+
+    @staticmethod
+    def get_ranker(query, inv_idx):
+        print("Num of docs:" + str(inv_idx.num_docs()))
+        # todo: fix it
+        # print("Query text: " + query.content())
         ranker = metapy.index.OkapiBM25(k1=1.2, b=0.75, k3=500)
         # ranker = metapy.index.DirichletPrior(mu=68)
-        print("Num of docs:" + str(idx.num_docs()))
-        query.content(query_txt)
-        print("Query text: " + query_txt)
-        results = ranker.score(idx, query, 10)
-        print('Ranking complete')
-        return (results)
+        return (ranker)
+
+    @staticmethod
+    def write_rocchio_feedback(idx):
+        # write to the q-rels file
+        f = open("cranfield-qrels.txt", "w+")
+        # todo: fix it
+        f.write(str(idx) + " 3 3")
+        f.close()
+
+    @staticmethod
+    def get_rocchio_ranking(query, ranker, inv_idx):
+        # populate the rocchio ranking
+        fwd_idx = metapy.index.make_forward_index('config.toml')
+        rocchio = metapy.index.Rocchio(fwd_idx, ranker, alpha=0.9, beta=1.0, k=50, max_terms=50)
+        results = rocchio.score(inv_idx, query, 10)
+        return results
