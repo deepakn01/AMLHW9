@@ -1,22 +1,14 @@
 import requests
 from bs4 import BeautifulSoup as BS
 import re
+import SearchResult
 # from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-# todo: separate indexing
 # todo: separate topic with weightage
 # todo: create interface
 # todo: add desc to app display
 # todo: add more reviews
-
-class SearchResult:
-    def __init__(self, search_url, title, desc, review, sentiment):
-        self.search_url = search_url
-        self.title = title
-        self.desc = desc
-        self.review = review
-        self.sentiment = sentiment
 
 class Walmart:
     def __init__(self):
@@ -69,6 +61,7 @@ class Walmart:
             try:
                 url = self.base_url + link
                 soup = BS(requests.get(url).text, "html.parser")
+
                 title = self.get_title(soup)
                 desc = self.get_desc(soup)
                 review =  self.get_review_title(soup)
@@ -78,7 +71,7 @@ class Walmart:
                 print('desc: ' + desc)
                 print('review: ' + review)
                 print('sentiment: ' + sentiment)
-                r = SearchResult(url, title, desc, review, sentiment)
+                r = SearchResult.SearchResult(url, title, desc, review, sentiment)
                 res.append(r)
 
             except:
