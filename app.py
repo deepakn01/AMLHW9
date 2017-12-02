@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
 import walmart as wm
+import kohls as kh
 import rank
 
 app = Flask(__name__)
@@ -15,8 +16,11 @@ def results():
     query_txt = request.form['search']
     walmart = wm.Walmart()
     search_res = walmart.get_search_results(query_txt)
-    rank.Rank.write_results(search_res)
 
+    kohls = kh.Kohls()
+    search_res.extend(kohls.get_search_results(query_txt))
+
+    rank.Rank.write_results(search_res)
     inv_idx = rank.Rank.create_inv_idx()
     query = rank.Rank.create_query_obj(query_txt)
 
