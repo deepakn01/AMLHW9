@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as BS
 import re
+import SearchResult
 # from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
@@ -8,14 +9,7 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 # todo: create interface
 # todo: add desc to app display
 # todo: add more reviews
-
-class SearchResult:
-    def __init__(self, search_url, title, desc, review, sentiment):
-        self.search_url = search_url
-        self.title = title
-        self.desc = desc
-        self.review = review
-        self.sentiment = sentiment
+# todo: use beautiful soup instead of regex
 
 class Kohls:
     def __init__(self):
@@ -73,7 +67,7 @@ class Kohls:
                 print('desc: ' + desc)
                 print('review: ' + review)
                 print('sentiment: ' + sentiment)
-                r = SearchResult(url, title, desc, review, sentiment)
+                r = SearchResult.SearchResult(url, title, desc, review, sentiment)
                 res.append(r)
 
             except:
@@ -81,9 +75,9 @@ class Kohls:
 
         return res
 
-search_term = "nike shoes"
-wm = Kohls()
-results = wm.get_search_results(search_term)
+# search_term = "nike shoes"
+# wm = Kohls()
+# results = wm.get_search_results(search_term)
 # wm.write_results(results)
 # rank_res = wm.createIndex(search_term)
 # print(rank_res)
