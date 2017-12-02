@@ -37,17 +37,14 @@ class Kohls:
         return unique
 
     def get_desc(self, soup):
-        desc_res = soup.find(class_='pdp-product-title').contents
-        desc = ''
-        for tag in desc_res:
-            desc += ' ' + tag.text
-        return desc
+        tag = soup.find("meta", attrs={"name": "description"})
+        return tag["content"]
 
     def get_title(self, soup):
         return soup.title.string
 
     def get_review_title(self, soup):
-        review_all = soup.find_all(class_='BVRRValue BVRRReviewTitle')
+        review_all = soup.find_all("span", attrs={"itemprop":"name"})
         review_title = ''
         for review in review_all:
             review_title += ' ' + review.text
@@ -66,8 +63,9 @@ class Kohls:
             try:
                 url = self.base_url + link
                 soup = BS(requests.get(url).text, "html.parser")
+
                 title = self.get_title(soup)
-                # desc = self.get_desc(soup)
+                desc = self.get_desc(soup)
                 review =  self.get_review_title(soup)
                 sentiment = self.get_sentiment(review)
                 print('link: ' + url)
@@ -83,8 +81,7 @@ class Kohls:
 
         return res
 
-search_term = "basket ball hoop"
-search_term = "basket"
+search_term = "nike shoes"
 wm = Kohls()
 results = wm.get_search_results(search_term)
 # wm.write_results(results)
