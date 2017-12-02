@@ -67,7 +67,7 @@ class Kohls:
                 print('desc: ' + desc)
                 print('review: ' + review)
                 print('sentiment: ' + sentiment)
-                r = SearchResult.SearchResult(url, title, desc, review, sentiment)
+                r = SearchResult.SearchResult(self.base_url, url, title, desc, review, sentiment)
                 res.append(r)
 
             except:
