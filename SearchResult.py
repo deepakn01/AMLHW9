@@ -1,5 +1,6 @@
 class SearchResult:
-    def __init__(self, search_url, title, desc, review, sentiment):
+    def __init__(self, website, search_url, title, desc, review, sentiment):
+        self.website = website
         self.search_url = search_url
         self.title = title
         self.desc = desc
