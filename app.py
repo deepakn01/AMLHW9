@@ -5,6 +5,7 @@ import rank
 import os
 
 app = Flask(__name__)
+rank.Rank.deletefile()
 
 @app.route("/", methods=['get','post'])
 
@@ -42,7 +43,7 @@ def results():
         results = rocchio_res
 
     head1 = '<h1> Search Results for: ' + query_txt + '</h1><br><br>'
-    tbl_start = '<table><tr><th>Product</th><th>Description</th><th>Sentiment</th><th>Website</th></tr>'
+    tbl_start = '<table><tr><th>Product</th><th>Description</th><th>Review</th><th>Sentiment</th><th>Website</th></tr>'
     tbl_end = '</table>'
     tbl_data = ''
     btn = '<br><br><br><center> <form action="/" method="post"><input type="submit" name="submit" value="Refine Query?"></form></center>'
@@ -50,7 +51,7 @@ def results():
         inv_idx = result[0]
         res_url = str(search_res[inv_idx].search_url)
         print(inv_idx)
-        tbl_data = tbl_data + '<tr><td>' + search_res[inv_idx].title + '</td><td>' + search_res[inv_idx].desc + '</td><td>' + search_res[
+        tbl_data = tbl_data + '<tr><td>' + search_res[inv_idx].title + '</td><td>' + search_res[inv_idx].desc + '</td><td>'+ search_res[inv_idx].review + '</td><td>' + search_res[
             inv_idx].sentiment + '</td><td>' + search_res[inv_idx].website + '</td><td width="400"><a href="/rocchio/' + str(inv_idx) + '/' + res_url.replace("/","|") + '" name="link" >Buy Now</a></td></tr>'
 
     return head1 + tbl_start + tbl_data + tbl_end + btn

@@ -52,3 +52,7 @@ class Rank:
         rocchio = metapy.index.Rocchio(fwd_idx, ranker, alpha=0.9, beta=1.0, k=50, max_terms=50)
         results = rocchio.score(inv_idx, query, 10)
         return results
+
+    @staticmethod
+    def deletefile():
+        open("cranfield-qrels.txt", "w").close()
