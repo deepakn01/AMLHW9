@@ -9,6 +9,7 @@ The main idea of this project is to build a metasearch engine, that can be used 
 Another most important feature is that once the users starts clicking on the links of the products, the app uses those clicks as an implicit feedback and will offer the user with an option to refine the results. If he clicks a button, the list will be re-ordered using Rocchio feedback mechanism and he will be rendered with more relevant results based on his clicks. 
 
 **Implementation**
+
 To implement the whole solution, we needed to do the following
 
  1. Build a web crawler, that would query the websites based on user's search condition and would parse the html pages to extract the information like product name, description, review etc.
