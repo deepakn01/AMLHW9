@@ -31,17 +31,13 @@ class Rank:
     @staticmethod
     def get_ranker(query, inv_idx):
         print("Num of docs:" + str(inv_idx.num_docs()))
-        # todo: fix it
-        # print("Query text: " + query.content())
         ranker = metapy.index.OkapiBM25(k1=1.2, b=0.75, k3=500)
-        # ranker = metapy.index.DirichletPrior(mu=68)
         return (ranker)
 
     @staticmethod
     def write_rocchio_feedback(idx):
         # write to the q-rels file
         f = open("cranfield-qrels.txt", "w+")
-        # todo: fix it
         f.write(str(idx) + " 3 3")
         f.close()
 
@@ -50,7 +46,7 @@ class Rank:
         # populate the rocchio ranking
         fwd_idx = metapy.index.make_forward_index('config.toml')
         rocchio = metapy.index.Rocchio(fwd_idx, ranker, alpha=0.9, beta=1.0, k=50, max_terms=50)
-        results = rocchio.score(inv_idx, query, 10)
+        results = rocchio.score(inv_idx, query, 30)
         return results
 
     @staticmethod
