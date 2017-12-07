@@ -6,7 +6,7 @@ import rank
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'e5ac358c-f0bf-11e5-9e39-d3b532c10a28'
-rank.Rank.deletefile()
+
 search_res = []
 
 
@@ -21,7 +21,7 @@ def results():
     global search_res
     query_txt = request.form['search']
     session['query_txt'] = query_txt
-
+    rank.Rank.deletefile()
     walmart = wm.Walmart()
     search_res = walmart.get_search_results(query_txt)
 
@@ -30,10 +30,12 @@ def results():
 
     rank.Rank.write_results(search_res)
     inv_idx = rank.Rank.create_inv_idx()
+
     query = rank.Rank.create_query_obj(query_txt)
 
     ranker = rank.Rank.get_ranker(query, inv_idx)
     rank_res = ranker.score(inv_idx, query, 30)
+
     result = []
 
     for res in rank_res:
@@ -43,7 +45,23 @@ def results():
     print("After BM25 ranking")
     print(result)
 
+    print(rank_res)
+    rocchio_res = rank.Rank.get_rocchio_ranking(query, ranker, inv_idx)
+    print(rocchio_res)
+
     return render_template("results.html", results=result, query_txt=query_txt, search_res=search_res)
+
+
+    print(len(search_res))
+    print(len(results))
+    print(())
+
+    for i, result in enumerate(results):
+        print(result[0])
+        print(i)
+        print(search_res[i].title)
+
+    return render_template("results.html", results = results, query_txt = query_txt, search_res = search_res)
 
 
 @app.route("/rocchio/<i>/<path:u>", methods=['get', 'post'])
