@@ -2,12 +2,8 @@ import requests
 from bs4 import BeautifulSoup as BS
 import re
 import SearchResult
-# from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-# todo: separate topic with weightage
-# todo: create interface
-# todo: add desc to app display
 # todo: add more reviews
 
 class Walmart:
@@ -49,8 +45,6 @@ class Walmart:
         return review_title
 
     def get_sentiment(self, text):
-        # blob = TextBlob(text)
-        # return blob.sentiment.polarity
         analyzer = SentimentIntensityAnalyzer()
         return str(analyzer.polarity_scores(text))
 
@@ -79,6 +73,7 @@ class Walmart:
 
         return res
 
+## Test code
 # search_term = "basket ball hoop"
 # search_term = "basket"
 # wm = Walmart()
@@ -86,32 +81,3 @@ class Walmart:
 # wm.write_results(results)
 # rank_res = wm.createIndex(search_term)
 # print(rank_res)
-
-# to get the description of the product
-# res = soup.find_all(class_ = re.compile('description.*body'))
-# res = soup.find(class_ = re.compile('about.*desc')).contents
-
-
-# to get the search results
-# search_res = soup.find_all(class_ = re.compile('product.*title.*link'))
-# search_res = soup.find_all("a", class_="product-title-link")
-# search_res = soup.find_all(class_ = 'product-title-link')
-# search_res = soup.find_all(string = 'productPageUrl')
-# search_res = soup.find_all('a')
-
-
-# to get the links in the search page
-# for link in search_res:
-#     print(link.get('href'))
-
-# to get the title
-# print soup.title.string
-# print text
-
-# search by a string
-# res = soup.find_all(string = re.compile('Better'))
-
-# from pyquery import PyQuery as pq
-# name = 'basket'
-# response = pq(url=url.format(name=name))
-# print response
