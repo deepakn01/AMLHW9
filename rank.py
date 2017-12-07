@@ -40,9 +40,10 @@ class Rank:
     @staticmethod
     def write_rocchio_feedback(idx):
         # write to the q-rels file
-        f = open("cranfield-qrels.txt", "w+")
+        f = open("cranfield-qrels.txt", "a+")
         # todo: fix it
-        f.write(str(idx) + " 3 3")
+        f.write("1 "+str(idx) + " 3")
+        f.write('\n')
         f.close()
 
     @staticmethod
@@ -50,7 +51,7 @@ class Rank:
         # populate the rocchio ranking
         fwd_idx = metapy.index.make_forward_index('config.toml')
         rocchio = metapy.index.Rocchio(fwd_idx, ranker, alpha=0.9, beta=1.0, k=50, max_terms=50)
-        results = rocchio.score(inv_idx, query, 10)
+        results = rocchio.score(inv_idx, query, 30)
         return results
 
     @staticmethod
